@@ -271,7 +271,7 @@
         e.preventDefault()
       })
 
-		$('#menu-mobile')
+    $('#menu-mobile')
       .find('a')
       .on('click', function (e) {
         $('#menu-mobile').find('a').removeClass('active')
@@ -281,14 +281,14 @@
           .stop()
           .animate(
             {
-              scrollTop: $(anchor.attr('href')).offset().top - 50
+              scrollTop: $(anchor.attr('href')).offset().top - 100
             },
             1000
           )
-				$('.nav-icon3').removeClass('open')
-				$('body').removeClass('overflow-hidden')
-				$('#menu-mobile').removeClass('visible')
-				$('#logo').find('a').removeClass('visible-none')
+        $('.nav-icon3').removeClass('open')
+        $('body').removeClass('overflow-hidden')
+        $('#menu-mobile').removeClass('visible')
+        $('#logo').find('a').removeClass('visible-none')
         e.preventDefault()
       })
 
@@ -310,15 +310,64 @@
       $('#custom-navbar').removeClass('navbar-scroll')
       $('.nav-icon3').removeClass('scroll')
     } else {
-			$('#custom-navbar').addClass('navbar-scroll')
+      $('#custom-navbar').addClass('navbar-scroll')
       $('.nav-icon3').addClass('scroll')
     }
   })
 
-	$('.nav-icon3').click(function(){
-		$(this).toggleClass('open')
-		$('#logo').find('a').toggleClass('visible-none')
-		$('#menu-mobile').toggleClass('visible')
-		$('body').toggleClass('overflow-hidden')
-	})
+  $('.nav-icon3').on('click', (function () {
+    $(this).toggleClass('open')
+    $('#logo').find('a').toggleClass('visible-none')
+    $('#menu-mobile').toggleClass('visible')
+    $('body').toggleClass('overflow-hidden')
+  }))
+
+  $('.grid').imagesLoaded(function () {
+    $('.grid').isotope({
+      // options
+      itemSelector: '.grid-item',
+      percentPosition: true,
+      masonry: {
+        // use element for option
+        columnWidth: '.grid-sizer'
+      },
+      getSortData: {
+        moments: '.moments', // text from querySelector
+        category: '[data-category]',
+        weight: function (itemElem) {
+          // function
+          var weight = $(itemElem).find('.weight').text()
+          return parseFloat(weight.replace(/[\(\)]/g, ''))
+        }
+      }
+    })
+  })
+
+  var filterFns = {
+    // show if number is greater than 50
+    numberGreaterThan50: function () {
+      var number = $(this).find('.number').text()
+      return parseInt(number, 10) > 50
+    },
+    // show if name ends with -ium
+    ium: function () {
+      var name = $(this).find('.name').text()
+      return name.match(/ium$/)
+    }
+  }
+  // bind filter button click
+  $('.filters-button-group').find('button').on('click', function () {
+    var filterValue = $(this).attr('data-filter')
+    // use filterFn if matches value
+    filterValue = filterFns[filterValue] || filterValue
+    $('.grid').isotope({ filter: filterValue })
+  })
+  // change is-checked class on buttons
+  $('.button-group').each(function (i, buttonGroup) {
+    var $buttonGroup = $(buttonGroup)
+    $buttonGroup.on('click', 'button', function () {
+      $buttonGroup.find('.is-checked').removeClass('is-checked')
+      $(this).addClass('is-checked')
+    })
+  })
 })(jQuery)
