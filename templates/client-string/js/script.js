@@ -281,7 +281,7 @@
           .stop()
           .animate(
             {
-              scrollTop: $(anchor.attr('href')).offset().top - 100
+              scrollTop: $(anchor.attr('href')).offset().top - 70
             },
             1000
           )
